@@ -112,7 +112,7 @@
                         <nil key="title"/>
                         <rightBarButtonItems>
                             <barButtonItem style="plain" id="CO2-wk-eZh">
-                                <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="rZ5-bo-5vK">
+                                <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="rZ5-bo-5vK">
                                     <rect key="frame" x="326" y="5" width="51" height="34.333333333333336"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <state key="normal" title="Button"/>
@@ -125,7 +125,7 @@
                                 </button>
                             </barButtonItem>
                             <barButtonItem style="plain" id="Clr-wz-d8d">
-                                <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="yhU-oa-w8b">
+                                <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="yhU-oa-w8b">
                                     <rect key="frame" x="268.33333333333331" y="5" width="49.666666666666686" height="34.333333333333336"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <state key="normal" title="Button"/>
@@ -142,6 +142,7 @@
                     <connections>
                         <outlet property="activityIndicator" destination="NNb-Hq-DGr" id="JSo-7O-3oE"/>
                         <outlet property="collectionView" destination="1Dm-GG-QA1" id="2ey-KD-rjY"/>
+                        <segue destination="wn8-Q3-ejf" kind="show" identifier="searchBook" id="VP6-U8-bGf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -199,24 +200,20 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Content Details" id="nnd-3Z-0C5">
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="vFG-10-2hi">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="u71-XL-dHd">
-                                <rect key="frame" x="325" y="5" width="52" height="34.333333333333336"/>
+                        <barButtonItem key="rightBarButtonItem" title="Item" style="plain" id="UPY-Km-KUr">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="XUM-V3-W7B">
+                                <rect key="frame" x="290" y="5" width="87" height="34.333333333333336"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="star" catalog="system">
                                     <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </buttonConfiguration>
                             </button>
-                            <connections>
-                                <action selector="favoriteButtonTapped:" destination="7fo-Au-7sZ" id="Vqk-t6-qig"/>
-                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="authorLabel" destination="KIE-GJ-Yio" id="QhA-6v-r4y"/>
                         <outlet property="dateLabel" destination="HJV-a9-Cgj" id="qG8-RX-Hm0"/>
-                        <outlet property="descLabel" destination="KIE-GJ-Yio" id="QhA-6v-r4y"/>
-                        <outlet property="favoriteButton" destination="vFG-10-2hi" id="dFx-bh-EWQ"/>
                         <outlet property="imageView" destination="Jaq-QR-WsR" id="Err-ir-aYd"/>
                         <outlet property="titleLabel" destination="N6Y-7I-PaI" id="Wfa-ky-PN3"/>
                     </connections>
@@ -224,6 +221,48 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rah-a2-HJj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2055.7251908396947" y="-2.1126760563380285"/>
+        </scene>
+        <!--Search Book-->
+        <scene sceneID="cvK-GJ-zMX">
+            <objects>
+                <viewController modalPresentationStyle="fullScreen" id="wn8-Q3-ejf" customClass="SearchViewController" customModule="BookStoreApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Vu3-iC-IZh">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="IYl-2S-eM1">
+                                <rect key="frame" x="0.0" y="103" width="393" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="wn8-Q3-ejf" id="kH2-uZ-LYN"/>
+                                </connections>
+                            </searchBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="56B-bn-w8k">
+                                <rect key="frame" x="0.0" y="159" width="393" height="659"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="fLJ-v4-cuP"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="IYl-2S-eM1" firstAttribute="top" secondItem="fLJ-v4-cuP" secondAttribute="top" id="0sq-Og-urx"/>
+                            <constraint firstItem="56B-bn-w8k" firstAttribute="top" secondItem="IYl-2S-eM1" secondAttribute="bottom" id="54y-Aq-mOW"/>
+                            <constraint firstItem="fLJ-v4-cuP" firstAttribute="trailing" secondItem="56B-bn-w8k" secondAttribute="trailing" id="AAi-iZ-r16"/>
+                            <constraint firstItem="IYl-2S-eM1" firstAttribute="trailing" secondItem="fLJ-v4-cuP" secondAttribute="trailing" id="CXI-Zv-0qY"/>
+                            <constraint firstItem="fLJ-v4-cuP" firstAttribute="bottom" secondItem="56B-bn-w8k" secondAttribute="bottom" id="aZh-dd-IUT"/>
+                            <constraint firstItem="IYl-2S-eM1" firstAttribute="leading" secondItem="fLJ-v4-cuP" secondAttribute="leading" id="dm2-dA-8RP"/>
+                            <constraint firstItem="56B-bn-w8k" firstAttribute="leading" secondItem="fLJ-v4-cuP" secondAttribute="leading" id="jhs-tA-PfR"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Search Book" id="iiH-zV-sMS"/>
+                    <connections>
+                        <outlet property="searchBar" destination="IYl-2S-eM1" id="T3Y-ob-4sf"/>
+                        <outlet property="tableView" destination="56B-bn-w8k" id="yhW-2E-OXZ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f8w-qa-9bt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2056" y="-704"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="mSt-2h-Rho">

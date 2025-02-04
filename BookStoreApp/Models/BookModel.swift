@@ -29,3 +29,10 @@ struct BookModel: Codable {
         case imageUrl = "artworkUrl100"
        }
 }
+
+extension BookModel {
+    var isFavorite: Bool {
+        guard let id else { return false }
+        return CoreDataManager.shared.isBookFavorite(bookId: id)
+    }
+}
