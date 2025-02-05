@@ -7,54 +7,44 @@
 
 import UIKit
 
-class ViewController: UIViewController,UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var collectionView: UICollectionView!
+final class ViewController: UIViewController {
+    // MARK: IBOutlets
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet private weak var collectionView: UICollectionView!
+    @IBOutlet private weak var emptyLabel: UILabel!
+
+    // MARK: Properties
     private var selectedSort: SortType = .allBook
+    private var isLoading = false
+    private var bookData = [BookModel]()
+    private var bookDataDefault = [BookModel]()
+    private var currentPage = 1
+    private let itemsPerPage = 20
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    var bookData: [BookModel]? {
-        didSet {
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-                self.activityIndicator.setActiveState(isActive: false)
-            }
-        }
-    }
-
-    @objc private func refreshFavorites() {
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
-        }
-    }
-
+    // MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar()
         configureCollectionView()
+        configureActivityIndicator()
+        loadBooks()
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshFavorites), name: NSNotification.Name(Constants.favoritesUpdatedNotification), object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+}
+
+// MARK: - UI
+extension ViewController {
+    private func configureActivityIndicator() {
         self.activityIndicator.setActiveState(isActive: true)
-        activityIndicator.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshFavorites), name: NSNotification.Name("FavoritesUpdated"), object: nil)
-
-
-        NetworkManager.shared.makeRequest(endpoint: .bookModel, type: ResultModel.self) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let resultModel):
-                self.bookData = resultModel.feed.results
-            case .failure(let error):
-                print(error)
-                self.activityIndicator.setActiveState(isActive: false)
-            }
-        }
+        self.activityIndicator.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
     }
 
     private func configureNavigationBar() {
-        navigationItem.backButtonTitle = ""
+        navigationItem.backButtonTitle = Constants.emptyString
         navigationController?.navigationBar.tintColor = .gray
     }
 
@@ -65,92 +55,158 @@ class ViewController: UIViewController,UICollectionViewDataSource, UICollectionV
         collectionView.collectionViewLayout = layout
     }
 
-    // Filtreleme türlerine göre kitapları filtrele
+    private func updateViewVisibility() {
+        let isFavoritesSelected = selectedSort == .favoritesBook
+        let isEmpty = bookData.isEmpty
+        emptyLabel.isHidden = !(isEmpty && isFavoritesSelected)
+        collectionView.isHidden = isEmpty && isFavoritesSelected ? true : false
+    }
+}
+
+// MARK: - Logic
+extension ViewController {
+    private func loadBooks() {
+        guard !isLoading else { return }
+        isLoading = true
+
+        NetworkManager.shared.loadListOfBooks(currentPage: currentPage, itemsPerPage: itemsPerPage) { [weak self] books in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                self.isLoading = false
+                self.activityIndicator.setActiveState(isActive: false)
+                if self.currentPage == 1 {
+                    self.bookDataDefault = books
+                }
+                switch self.selectedSort {
+                case .newToOld:
+                    self.bookData.append(contentsOf: books.sortByDateDescending())
+                case .oldToNew:
+                    self.bookData.append(contentsOf: books.sortByDateAscending())
+                default:
+                    self.bookData.append(contentsOf: books)
+                }
+                self.collectionView.reloadData()
+            }
+        }
+    }
+
     private func sortBooks() {
+        currentPage = 1
         switch selectedSort {
         case .allBook:
-            print("")
-            //               sortBooks = books // Tüm kitapları göster
+            bookData = bookDataDefault
         case .favoritesBook:
-            print("")
-            //               sortBooks = books.filter { $0.isFavorite } // Sadece favori kitapları göster
+            let favoriBook = CoreDataManager.shared.getFavorites()
+            let bookModels = favoriBook.map { BookModel.from(favoriteBook: $0) }
+            bookData = bookModels
         case .newToOld:
-            print("")
+            bookData = bookDataDefault.sortByDateDescending()
         case .oldToNew:
-            print("")
+            bookData = bookDataDefault.sortByDateAscending()
         }
-
-        //        collectionView.reloadData()
+        updateViewVisibility()
+        collectionView.reloadData()
     }
-    private func createAction(title: String, sortType: SortType) -> UIAlertAction {
-        let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
-            guard let self else { return }
-            self.selectedSort = sortType
-            self.sortBooks()
-            print("\(title) seçildi")
+}
+
+// MARK: - Navigation Preparation
+extension ViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == Constants.showDetailIdentifier {
+            if let detailVC = segue.destination as? DetailViewController,
+               let indexPath = collectionView.indexPathsForSelectedItems?.first {
+                detailVC.selectedBook = bookData[indexPath.row]
+            }
         }
-        if selectedSort == sortType {
-            action.setValue(UIColor.red, forKey: "titleTextColor")
+    }
+}
+
+// MARK: - Actions
+extension ViewController {
+    @objc private func refreshFavorites() {
+        if selectedSort == .favoritesBook {
+            let favoriBook = CoreDataManager.shared.getFavorites()
+            let bookModels = favoriBook.map { BookModel.from(favoriteBook: $0) }
+            self.bookData = bookModels
         }
-        return action
+        updateViewVisibility()
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
     }
 
-
-    @IBAction func sortButtonAction(_ sender: Any) {
-        let actionSheet = UIAlertController(title: "Sıralama Seçenekleri", message: "Sıralamak istediğiniz seçeneği seçin", preferredStyle: .actionSheet)
+    @IBAction private func sortButtonAction(_ sender: Any) {
+        let actionSheet = UIAlertController(title: Strings.sortingOptions, message: Strings.selectOption, preferredStyle: .actionSheet)
 
         let options: [(title: String, sortType: SortType)] = [
-            ("📚 Tümü", .allBook),
-            ("📅 Yeniden Eskiye", .newToOld),
-            ("⏳ Eskiden Yeniye", .oldToNew),
-            ("⭐ Sadece Beğenilenler", .favoritesBook)
+            (Strings.allBook, .allBook),
+            (Strings.newToOld, .newToOld),
+            (Strings.oldToNew, .oldToNew),
+            (Strings.onlyFavorites, .favoritesBook)
         ]
 
         for option in options {
             actionSheet.addAction(createAction(title: option.title, sortType: option.sortType))
         }
 
-        actionSheet.addAction(UIAlertAction(title: "İptal", style: .cancel, handler: nil))
+        actionSheet.addAction(UIAlertAction(title: Strings.cancel, style: .cancel, handler: nil))
 
         present(actionSheet, animated: true, completion: nil)
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showDetail" {
-            if let detailVC = segue.destination as? DetailViewController,
-               let indexPath = collectionView.indexPathsForSelectedItems?.first, let book =  bookData?[indexPath.row] {
-                detailVC.selectedBook = book
+    private func createAction(title: String, sortType: SortType) -> UIAlertAction {
+        let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
+            guard let self else { return }
+            self.selectedSort = sortType
+            self.sortBooks()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                if !self.bookData.isEmpty {
+                    let indexPath = IndexPath(item: 0, section: 0)
+                    self.collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+                }
             }
         }
+        if selectedSort == sortType {
+            action.setValue(UIColor.red, forKey: Constants.titleTextColor)
+        }
+        return action
     }
 
-    @IBAction func searchButtonAction(_ sender: Any) {
-
+    @IBAction private func searchButtonAction(_ sender: Any) {
+        performSegue(withIdentifier: Constants.searchBookIdentifier, sender: nil)
     }
+}
 
+// MARK: - UICollectionViewDataSource
+extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return bookData?.count ?? 0
+        return bookData.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionViewCell", for: indexPath) as? CollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.collectionViewCell, for: indexPath) as? CollectionViewCell else {
             return UICollectionViewCell()
         }
-        
-        if let book = bookData?[indexPath.item] {
-
-            cell.configureCell(with: book)
-        }
-
+        cell.configureCell(with: bookData[indexPath.item])
         return cell
     }
+}
 
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension ViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let spacing: CGFloat = 10
         let totalSpacing = spacing * 2
         let width = (collectionView.frame.width - totalSpacing) / 2
-
         return CGSize(width: width, height: width * 1.5)
     }
-}
 
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if selectedSort == .favoritesBook { return }
+        if indexPath.row == bookData.count - 1 && !isLoading {
+            currentPage += 1
+            loadBooks()
+        }
+    }
+}

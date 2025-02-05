@@ -7,17 +7,22 @@
 
 import UIKit
 
-class TableViewCell: UITableViewCell {
-    @IBOutlet weak var posterImageView: UIImageView!
-    @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var authorLabel: UILabel!
-    @IBOutlet weak var titleLabel: UILabel!
+final class TableViewCell: UITableViewCell {
+    // MARK: Outlets
+    @IBOutlet private weak var posterImageView: UIImageView!
+    @IBOutlet private weak var dateLabel: UILabel!
+    @IBOutlet private weak var authorLabel: UILabel!
+    @IBOutlet private weak var titleLabel: UILabel!
 
+    // MARK: Life Cycle
     override func awakeFromNib() {
         super.awakeFromNib()
         posterImageView.image = nil
     }
+}
 
+// MARK: - UI
+extension TableViewCell {
     func configureCell(with model: BookModel) {
         dateLabel.text = model.date?.convertToMonthDayYearFormat()
         titleLabel.text = model.name

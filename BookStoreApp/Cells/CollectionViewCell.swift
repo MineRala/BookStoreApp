@@ -7,13 +7,16 @@
 
 import UIKit
 
-class CollectionViewCell: UICollectionViewCell {
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var label: UILabel!
-    @IBOutlet weak var favoriteButton: UIButton!
+final class CollectionViewCell: UICollectionViewCell {
+    // MARK: Outlets
+    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var favoriteButton: UIButton!
 
-    var book: BookModel?
+    // MARK: Properties
+    private var book: BookModel?
 
+    // MARK: Life Cycle
     override func awakeFromNib() {
         super.awakeFromNib()
         contentView.layer.cornerRadius = 10
@@ -26,25 +29,31 @@ class CollectionViewCell: UICollectionViewCell {
         book = nil
         updateFavoriteButtonIcon(isFavorite: false)
     }
+}
 
-    @IBAction func favoriteButtonTapped(_ sender: Any) {
-        guard let book = book else { return }
-        CoreDataManager.shared.toggleFavorite(book: book)
-        NotificationCenter.default.post(name: NSNotification.Name("FavoritesUpdated"), object: nil)
-    }
-
-    private func updateFavoriteButtonIcon(isFavorite: Bool) {
-        favoriteButton.setImage(
-            UIImage(systemName: isFavorite ? "star.fill" : "star")?
-                .withTintColor(isFavorite ? .yellow : .darkGray, renderingMode: .alwaysOriginal),
-            for: .normal
-        )
-    }
-
+// MARK: - UI
+extension CollectionViewCell {
     func configureCell(with model: BookModel) {
         self.book = model
         label.text = model.name
         imageView.setImage(from: model.imageUrl)
         updateFavoriteButtonIcon(isFavorite: model.isFavorite)
+    }
+
+    private func updateFavoriteButtonIcon(isFavorite: Bool) {
+        favoriteButton.setImage(
+            UIImage(systemName:  Icons.starFill)?
+                .withTintColor(isFavorite ? .yellow : .darkGray, renderingMode: .alwaysOriginal),
+            for: .normal
+        )
+    }
+}
+
+// MARK: - Actions
+extension CollectionViewCell {
+    @IBAction private func favoriteButtonTapped(_ sender: Any) {
+        guard let book else { return }
+        CoreDataManager.shared.toggleFavorite(book: book)
+        NotificationCenter.default.post(name: NSNotification.Name(Constants.favoritesUpdatedNotification), object: nil)
     }
 }

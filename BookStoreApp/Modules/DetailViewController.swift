@@ -6,15 +6,17 @@
 //
 import UIKit
 
-class DetailViewController: UIViewController {
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var authorLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
+final class DetailViewController: UIViewController {
+    // MARK: IBOutlets
+    @IBOutlet private  weak var imageView: UIImageView!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var authorLabel: UILabel!
+    @IBOutlet private weak var dateLabel: UILabel!
 
+    // MARK: Attributes
     private lazy var favoriteButton: UIBarButtonItem = {
         let button = UIBarButtonItem(
-            image: UIImage(systemName: "star"),
+            image: UIImage(systemName: Icons.starFill),
             style: .plain,
             target: self,
             action: #selector(favoriteButtonTapped)
@@ -22,14 +24,19 @@ class DetailViewController: UIViewController {
         return button
     }()
 
+    // MARK: Properties
     var selectedBook: BookModel?
 
+    // MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = favoriteButton
         configure()
     }
+}
 
+// MARK: - UI
+extension DetailViewController {
     private func configure() {
         guard let selectedBook else { return }
         titleLabel.text = selectedBook.name
@@ -39,16 +46,18 @@ class DetailViewController: UIViewController {
         updateFavoriteButtonIcon()
     }
 
-    @objc private func favoriteButtonTapped() {
-        guard let book = selectedBook, let bookId = book.id else { return }
-        CoreDataManager.shared.toggleFavorite(book: book)
-        updateFavoriteButtonIcon()
-        NotificationCenter.default.post(name: NSNotification.Name("FavoritesUpdated"), object: nil)
-    }
-
     private func updateFavoriteButtonIcon() {
         guard let book = selectedBook else { return }
-        favoriteButton.image = UIImage(systemName: book.isFavorite ?  "star.fill" : "star")
         favoriteButton.tintColor = book.isFavorite ? .yellow : .darkGray
+    }
+}
+
+// MARK: - Actions
+extension DetailViewController {
+    @objc private func favoriteButtonTapped() {
+        guard let book = selectedBook else { return }
+        CoreDataManager.shared.toggleFavorite(book: book)
+        updateFavoriteButtonIcon()
+        NotificationCenter.default.post(name: NSNotification.Name(Constants.favoritesUpdatedNotification), object: nil)
     }
 }

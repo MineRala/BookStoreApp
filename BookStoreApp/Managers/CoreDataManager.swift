@@ -15,7 +15,7 @@ class CoreDataManager {
     let persistentContainer: NSPersistentContainer
 
     private init() {
-        persistentContainer = NSPersistentContainer(name: "FavoriteBookModel") // Model adını değiştir
+        persistentContainer = NSPersistentContainer(name: Constants.favoritePersistentContainerName)
         persistentContainer.loadPersistentStores { (_, error) in
             if let error = error {
                 fatalError("Core Data yüklenirken hata oluştu: \(error)")
@@ -27,7 +27,7 @@ class CoreDataManager {
         return persistentContainer.viewContext
     }
 
-    // MARK: - 📌 Yeni Favori Ekleme
+    // MARK: - Add Favorite Book
     func addFavorite(with book: BookModel) {
         let newFavorite = FavoriteBookModel(context: context)
         newFavorite.bookId = book.id
@@ -36,10 +36,10 @@ class CoreDataManager {
         newFavorite.bookDate = book.date
         newFavorite.bookImageUrl = book.imageUrl
         saveContext()
-        print("Favori eklendi: \(newFavorite.bookName)")
+        print("Favorite added: \(newFavorite.bookName)")
     }
 
-    // MARK: - ❌ Favori Silme
+    // MARK: - Delete Favorite Book
     func removeFavorite(bookId: String) {
         let fetchRequest: NSFetchRequest<FavoriteBookModel> = FavoriteBookModel.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "bookId == %@", bookId) // ✅ UUID yerine String ile karşılaştır
@@ -49,23 +49,23 @@ class CoreDataManager {
             if let favoriteToRemove = favorites.first {
                 context.delete(favoriteToRemove)
                 saveContext()
-                print("Favori kaldırıldı: \(favoriteToRemove.bookName ?? "")")
+                print("Favorite removed: \(favoriteToRemove.bookName ?? "")")
             } else {
-                print("Belirtilen ID ile eşleşen favori bulunamadı: \(bookId)")
+                print("No favorites matching the specified ID were found: \(bookId)")
             }
         } catch {
-            print("Favori silme hatası: \(error)")
+            print("Favorite deletion error: \(error)")
         }
     }
 
-    // MARK: - 🔍 Favori Listesini Getirme
+    // MARK: - Get Favorite Book List
     func getFavorites() -> [FavoriteBookModel] {
         let fetchRequest: NSFetchRequest<FavoriteBookModel> = FavoriteBookModel.fetchRequest()
 
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("Favori listesi alınırken hata oluştu: \(error)")
+            print("Error retrieving favorites list: \(error)")
             return []
         }
     }
@@ -78,7 +78,7 @@ class CoreDataManager {
             let count = try context.count(for: fetchRequest)
             return count > 0
         } catch {
-            print("Favori kontrol hatası: \(error)")
+            print("Favorite control error: \(error)")
             return false
         }
     }
@@ -93,13 +93,13 @@ class CoreDataManager {
        }
 
 
-    // MARK: - ✅ Core Data Kaydetme
+    // MARK: - Save Data
     func saveContext() {
         if context.hasChanges {
             do {
                 try context.save()
             } catch {
-                print("Core Data kaydetme hatası: \(error)")
+                print("Core Data saving error: \(error)")
             }
         }
     }

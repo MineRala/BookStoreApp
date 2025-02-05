@@ -17,6 +17,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No favorite books yet. Start adding some!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vze-K1-n9e">
+                                <rect key="frame" x="16" y="103" width="361" height="715"/>
+                                <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="1Dm-GG-QA1">
                                 <rect key="frame" x="16" y="0.0" width="361" height="818"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -54,7 +60,7 @@
                                                         <constraint firstAttribute="width" constant="32" id="CVh-XT-so3"/>
                                                     </constraints>
                                                     <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="plain" image="star" catalog="system">
+                                                    <buttonConfiguration key="configuration" style="plain" image="star.fill" catalog="system">
                                                         <color key="baseForegroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     </buttonConfiguration>
                                                     <connections>
@@ -100,10 +106,14 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="vze-K1-n9e" secondAttribute="trailing" constant="16" id="0p1-6X-pHC"/>
                             <constraint firstItem="NNb-Hq-DGr" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="207-Uo-HF5"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="1Dm-GG-QA1" secondAttribute="bottom" id="Aif-2c-MvX"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="1Dm-GG-QA1" secondAttribute="trailing" constant="16" id="HpD-MR-Xxt"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="vze-K1-n9e" secondAttribute="bottom" id="PDQ-rS-vYL"/>
+                            <constraint firstItem="vze-K1-n9e" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="ZWN-Ni-AFq"/>
                             <constraint firstItem="1Dm-GG-QA1" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="fGb-cn-Gu0"/>
+                            <constraint firstItem="vze-K1-n9e" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="lKk-IC-gVy"/>
                             <constraint firstItem="NNb-Hq-DGr" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="nfk-0h-c3K"/>
                             <constraint firstItem="1Dm-GG-QA1" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="zT9-SI-Ors"/>
                         </constraints>
@@ -142,6 +152,7 @@
                     <connections>
                         <outlet property="activityIndicator" destination="NNb-Hq-DGr" id="JSo-7O-3oE"/>
                         <outlet property="collectionView" destination="1Dm-GG-QA1" id="2ey-KD-rjY"/>
+                        <outlet property="emptyLabel" destination="vze-K1-n9e" id="bTk-6D-mxJ"/>
                         <segue destination="wn8-Q3-ejf" kind="show" identifier="searchBook" id="VP6-U8-bGf"/>
                     </connections>
                 </viewController>
@@ -152,7 +163,7 @@
         <!--Content Details-->
         <scene sceneID="3Go-pA-rWY">
             <objects>
-                <viewController id="7fo-Au-7sZ" customClass="DetailViewController" customModule="BookStoreApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DetailViewController" id="7fo-Au-7sZ" customClass="DetailViewController" customModule="BookStoreApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="n7I-rg-TRy">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -163,20 +174,20 @@
                                     <constraint firstAttribute="height" constant="350" id="5vF-CE-Zaw"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N6Y-7I-PaI">
-                                <rect key="frame" x="55" y="443" width="42" height="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N6Y-7I-PaI">
+                                <rect key="frame" x="12" y="473" width="393" height="22.666666666666686"/>
                                 <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="20"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KIE-GJ-Yio">
-                                <rect key="frame" x="88" y="573" width="42" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KIE-GJ-Yio">
+                                <rect key="frame" x="12" y="515.66666666666663" width="393" height="21"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="18"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HJV-a9-Cgj">
-                                <rect key="frame" x="88" y="616" width="42" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HJV-a9-Cgj">
+                                <rect key="frame" x="12" y="556.66666666666663" width="393" height="21"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="18"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -201,7 +212,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Content Details" id="nnd-3Z-0C5">
                         <barButtonItem key="rightBarButtonItem" title="Item" style="plain" id="UPY-Km-KUr">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="XUM-V3-W7B">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="XUM-V3-W7B">
                                 <rect key="frame" x="290" y="5" width="87" height="34.333333333333336"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
@@ -220,7 +231,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rah-a2-HJj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2055.7251908396947" y="-2.1126760563380285"/>
+            <point key="canvasLocation" x="2056" y="-18"/>
         </scene>
         <!--Search Book-->
         <scene sceneID="cvK-GJ-zMX">
@@ -231,14 +242,30 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="IYl-2S-eM1">
-                                <rect key="frame" x="0.0" y="103" width="393" height="56"/>
+                                <rect key="frame" x="0.0" y="103" width="393" height="70"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="ERj-le-hHJ"/>
+                                </constraints>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="wn8-Q3-ejf" id="kH2-uZ-LYN"/>
                                 </connections>
                             </searchBar>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We couldn't find anything for that search." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Izz-o0-TUV">
+                                <rect key="frame" x="16" y="173" width="361" height="645"/>
+                                <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="NaL-sp-7E6">
+                                <rect key="frame" x="146.66666666666666" y="376" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="7W9-cq-oIr"/>
+                                    <constraint firstAttribute="width" constant="100" id="Rbb-29-C2g"/>
+                                </constraints>
+                            </activityIndicatorView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="56B-bn-w8k">
-                                <rect key="frame" x="0.0" y="159" width="393" height="659"/>
+                                <rect key="frame" x="0.0" y="173" width="393" height="645"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
@@ -248,14 +275,22 @@
                             <constraint firstItem="IYl-2S-eM1" firstAttribute="top" secondItem="fLJ-v4-cuP" secondAttribute="top" id="0sq-Og-urx"/>
                             <constraint firstItem="56B-bn-w8k" firstAttribute="top" secondItem="IYl-2S-eM1" secondAttribute="bottom" id="54y-Aq-mOW"/>
                             <constraint firstItem="fLJ-v4-cuP" firstAttribute="trailing" secondItem="56B-bn-w8k" secondAttribute="trailing" id="AAi-iZ-r16"/>
+                            <constraint firstItem="fLJ-v4-cuP" firstAttribute="bottom" secondItem="Izz-o0-TUV" secondAttribute="bottom" id="BH1-68-y9J"/>
+                            <constraint firstItem="fLJ-v4-cuP" firstAttribute="trailing" secondItem="Izz-o0-TUV" secondAttribute="trailing" constant="16" id="CEJ-3V-UY9"/>
                             <constraint firstItem="IYl-2S-eM1" firstAttribute="trailing" secondItem="fLJ-v4-cuP" secondAttribute="trailing" id="CXI-Zv-0qY"/>
+                            <constraint firstItem="NaL-sp-7E6" firstAttribute="centerY" secondItem="Vu3-iC-IZh" secondAttribute="centerY" id="JlP-NK-zld"/>
+                            <constraint firstItem="NaL-sp-7E6" firstAttribute="centerX" secondItem="Vu3-iC-IZh" secondAttribute="centerX" id="K6b-8e-FWQ"/>
                             <constraint firstItem="fLJ-v4-cuP" firstAttribute="bottom" secondItem="56B-bn-w8k" secondAttribute="bottom" id="aZh-dd-IUT"/>
                             <constraint firstItem="IYl-2S-eM1" firstAttribute="leading" secondItem="fLJ-v4-cuP" secondAttribute="leading" id="dm2-dA-8RP"/>
                             <constraint firstItem="56B-bn-w8k" firstAttribute="leading" secondItem="fLJ-v4-cuP" secondAttribute="leading" id="jhs-tA-PfR"/>
+                            <constraint firstItem="Izz-o0-TUV" firstAttribute="top" secondItem="IYl-2S-eM1" secondAttribute="bottom" id="r5c-ry-iQM"/>
+                            <constraint firstItem="Izz-o0-TUV" firstAttribute="leading" secondItem="fLJ-v4-cuP" secondAttribute="leading" constant="16" id="rwS-Fy-ZCm"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Search Book" id="iiH-zV-sMS"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="NaL-sp-7E6" id="e14-DY-64m"/>
+                        <outlet property="emptyLabel" destination="Izz-o0-TUV" id="k7F-k9-dC6"/>
                         <outlet property="searchBar" destination="IYl-2S-eM1" id="T3Y-ob-4sf"/>
                         <outlet property="tableView" destination="56B-bn-w8k" id="yhW-2E-OXZ"/>
                     </connections>
@@ -287,6 +322,7 @@
         <image name="list.bullet" catalog="system" width="128" height="87"/>
         <image name="magnifyingglass" catalog="system" width="128" height="117"/>
         <image name="star" catalog="system" width="128" height="116"/>
+        <image name="star.fill" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -12,7 +12,7 @@ struct ResultModel: Codable {
 }
 
 struct FeedModel: Codable {
- var results: [BookModel]
+    var results: [BookModel]
 }
 
 struct BookModel: Codable {
@@ -27,12 +27,23 @@ struct BookModel: Codable {
         case artistName, id, name, kind
         case date = "releaseDate"
         case imageUrl = "artworkUrl100"
-       }
+    }
 }
 
 extension BookModel {
     var isFavorite: Bool {
         guard let id else { return false }
         return CoreDataManager.shared.isBookFavorite(bookId: id)
+    }
+
+    static func from(favoriteBook: FavoriteBookModel) -> BookModel {
+        return BookModel(
+            artistName: favoriteBook.bookArtistName,
+            id: favoriteBook.bookId,
+            name: favoriteBook.bookName,
+            date: favoriteBook.bookDate,
+            kind: nil,
+            imageUrl: favoriteBook.bookImageUrl
+        )
     }
 }
