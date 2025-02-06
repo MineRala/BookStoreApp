@@ -117,7 +117,7 @@ extension SearchViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        cell.configureCell(with: filteredBooks[indexPath.row])
+        cell.configureCell(with: TableViewCellViewModel(book: filteredBooks[indexPath.row], view: cell))
         return cell
     }
 }
@@ -128,7 +128,7 @@ extension SearchViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         let storyboard = UIStoryboard(name: Constants.main, bundle: nil)
         if let detailVC = storyboard.instantiateViewController(withIdentifier: Constants.detailViewController) as? DetailViewController {
-            detailVC.selectedBook = filteredBooks[indexPath.row]
+            detailVC.book = filteredBooks[indexPath.row]
             navigationController?.pushViewController(detailVC, animated: true)
         } else {
             print("DetailViewController not instantiate!")

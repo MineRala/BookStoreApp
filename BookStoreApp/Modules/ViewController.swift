@@ -115,7 +115,7 @@ extension ViewController {
         if segue.identifier == Constants.showDetailIdentifier {
             if let detailVC = segue.destination as? DetailViewController,
                let indexPath = collectionView.indexPathsForSelectedItems?.first {
-                detailVC.selectedBook = bookData[indexPath.row]
+                detailVC.book = bookData[indexPath.row]
             }
         }
     }
@@ -182,14 +182,40 @@ extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return bookData.count
     }
-
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.collectionViewCell, for: indexPath) as? CollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.configureCell(with: bookData[indexPath.item])
+        cell.configureCell(with: CollectionViewCellViewModel(book: bookData[indexPath.item], view: cell))
+
         return cell
     }
+
+    // UICollectionView ya da UITableView'dan çağırmak
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        let selectedBook = bookData[indexPath.item]
+//
+//        // Storyboard'dan DetailViewController'ı açıyoruz
+//        if let detailVC = storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController {
+//            // Burada selectedBook'u DetailViewController'a geçiyoruz
+//            detailVC.book = selectedBook
+//            navigationController?.pushViewController(detailVC, animated: true)
+//        }
+//    }
+
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        // Seçilen book verisini alıyoruz
+//        let selectedBook = bookData[indexPath.item]
+//
+//        // Storyboard kullanmıyoruz, direkt olarak programatik başlatıyoruz
+//        let detailVC = DetailViewController(book: selectedBook)
+//
+//        // Navigation controller üzerinden push ediyoruz
+//        navigationController?.pushViewController(detailVC, animated: true)
+//    }
+
+
+
 }
 
 

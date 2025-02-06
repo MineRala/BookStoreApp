@@ -8,9 +8,9 @@
 import UIKit
 
 extension UIImageView {
-    func setImage(from url: String?) {
+    func setImage(from url: String?, cacheManager: CacheManaging = CacheManager.shared) {
         guard let url else { return }
-        CacheManager.shared.loadImage(from: url) { [weak self] image in
+        cacheManager.loadImage(from: url) { [weak self] image in
             self?.image = image
         }
     }
