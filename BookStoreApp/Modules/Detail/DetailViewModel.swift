@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol DetailViewModelInterface: AnyObject {
+protocol DetailViewModelInterface {
     func viewDidLoad()
     func viewWillAppear()
     func favoriteButtonTapped()
@@ -15,26 +15,21 @@ protocol DetailViewModelInterface: AnyObject {
 
 final class DetailViewModel {
     private var book: BookModel
-    private let coreDataManager: CoreDataManager
+    private let coreDataManager: CoreDataManagerProtocol
     private var view: DetailViewControllerInterface?
 
-    init(book: BookModel, coreDataManager: CoreDataManager = CoreDataManager.shared, view: DetailViewControllerInterface) {
+    init(book: BookModel, coreDataManager: CoreDataManagerProtocol = CoreDataManager.shared, view: DetailViewControllerInterface) {
         self.book = book
         self.coreDataManager = coreDataManager
         self.view = view
     }
-
-    private func configureView() {
-        view?.updateUI(with: book, cacheManager: CacheManager.shared)
-        view?.updateFavoriteButtonIcon(isFavorite: book.isFavorite)
-    }
-
 }
 
 // MARK: - DetailViewModelInterface
 extension DetailViewModel: DetailViewModelInterface {
     func viewDidLoad() {
-        configureView()
+        view?.updateUI(with: book, cacheManager: CacheManager.shared)
+        view?.updateFavoriteButtonIcon(isFavorite: book.isFavorite)
     }
 
     func viewWillAppear() {

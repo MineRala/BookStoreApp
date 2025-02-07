@@ -11,13 +11,20 @@ import Foundation
 class MockCollectionViewCellViewModel: CollectionViewCellViewModelInterface {
     var favoriteButtonTappedCalled = false
     var viewDidLoadCalled = false
+    var mockCoreDataManager: MockCoreDataManager
+    var book: BookModel
 
-    func favoriteButtonTapped() {
-        favoriteButtonTappedCalled = true
+    init(book: BookModel, coreDataManager: MockCoreDataManager) {
+        self.book = book
+        self.mockCoreDataManager = coreDataManager
     }
 
     func viewDidLoad() {
         viewDidLoadCalled = true
     }
-}
 
+    func favoriteButtonTapped() {
+        favoriteButtonTappedCalled = true
+        mockCoreDataManager.toggleFavorite(book: book)
+    }
+}

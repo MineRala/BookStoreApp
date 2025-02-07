@@ -19,9 +19,10 @@ final class DetailViewModelTests: XCTestCase {
 
         book = BookModel(
             artistName: "Anonymous",
+            id: "1613220757",
             name: "Severance",
             date: "2022-03-18",
-            imageUrl: "https://example.com/image.jpg"
+            imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Publication126/v4/0c/cf/d5/0ccfd594-6286-9daf-df93-3239b2f07e1c/SEV1_BookCover.jpg/100x134bb.png"
         )
 
         mockView = MockDetailViewController()
@@ -38,7 +39,7 @@ final class DetailViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func testViewDidLoad_CallsUpdateUIAndUpdateFavoriteButtonIcon() {
+    func testViewDidLoadCallsUpdateUIAndUpdateFavoriteButtonIcon() {
         // When
         viewModel.viewDidLoad()
 
@@ -47,7 +48,7 @@ final class DetailViewModelTests: XCTestCase {
         XCTAssertTrue(mockView.updateFavoriteButtonIconCalled, "updateFavoriteButtonIcon metodu çağrılmadı!")
     }
 
-    func testViewWillAppear_CallsRightBarButtonItem() {
+    func testViewWillAppearCallsRightBarButtonItem() {
         // When
         viewModel.viewWillAppear()
 
@@ -55,7 +56,7 @@ final class DetailViewModelTests: XCTestCase {
         XCTAssertTrue(mockView.rightBarButtonItemCalled, "rightBarButtonItem metodu çağrılmadı!")
     }
 
-    func testFavoriteButtonTapped_TogglesFavoriteAndUpdatesUI() {
+    func testFavoriteButtonTappedTogglesFavoriteAndUpdatesUI() {
         // When
         viewModel.favoriteButtonTapped()
 

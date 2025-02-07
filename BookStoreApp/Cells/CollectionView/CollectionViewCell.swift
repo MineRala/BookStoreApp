@@ -9,7 +9,6 @@ import UIKit
 
 protocol CollectionViewCellInterface: AnyObject {
     func updateUI(with book: BookModel)
-
 }
 
 final class CollectionViewCell: UICollectionViewCell {

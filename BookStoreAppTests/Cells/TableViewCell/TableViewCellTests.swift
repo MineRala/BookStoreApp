@@ -2,42 +2,41 @@ import XCTest
 @testable import BookStoreApp
 
 class TableViewCellTests: XCTestCase {
-
     var tableViewCell: TableViewCell!
     var mockViewModel: MockTableViewCellViewModel!
     var mockCacheManager: MockCacheManager!
+    var book: BookModel!
 
     override func setUp() {
         super.setUp()
+
+        book = BookModel(
+            artistName: "Anonymous",
+            id: "1613220757",
+            name: "Severance",
+            date: "2022-03-18",
+            imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Publication126/v4/0c/cf/d5/0ccfd594-6286-9daf-df93-3239b2f07e1c/SEV1_BookCover.jpg/100x134bb.png"
+        )
+
+        mockCacheManager = MockCacheManager()
+        mockCacheManager.imageToReturn = UIImage(named: "image")
+        mockViewModel = MockTableViewCellViewModel()
 
         let bundle = Bundle(for: TableViewCell.self)
         let nib = UINib(nibName: "TableViewCell", bundle: bundle)
         tableViewCell = nib.instantiate(withOwner: nil, options: nil).first as? TableViewCell
 
-        mockCacheManager = MockCacheManager()
-        mockCacheManager.imageToReturn = UIImage(named: "image")
-
-        mockViewModel = MockTableViewCellViewModel()
-
-        tableViewCell.configureCell(with: mockViewModel)
     }
 
     override func tearDown() {
         tableViewCell = nil
         mockViewModel = nil
         mockCacheManager = nil
+        book = nil
         super.tearDown()
     }
 
     func testUpdateUIWithBook() {
-        // Given
-        let book = BookModel(
-            artistName: "Anonymous",
-            name: "Severance",
-            date: "2022-03-18",
-            imageUrl: "https://is1-ssl.mzstatic.com/image/thumb/Publication126/v4/0c/cf/d5/0ccfd594-6286-9daf-df93-3239b2f07e1c/SEV1_BookCover.jpg/100x134bb.png"
-        )
-
         // When
         tableViewCell.updateUI(with: book, cacheManager: mockCacheManager)
 
@@ -49,11 +48,10 @@ class TableViewCellTests: XCTestCase {
     }
 
     func testViewModelViewDidLoadCalled() {
-        // Given:
-        // When:
+        // When
         tableViewCell.configureCell(with: mockViewModel)
 
-        // Then:
+        // Then
         XCTAssertTrue(mockViewModel.viewDidLoadCalled, "viewDidLoad should be called in the view model when the cell is configured")
     }
 }

@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TableViewCellInterface: AnyObject {
-    func updateUI(with book: BookModel, cacheManager: CacheManaging)
+    func updateUI(with book: BookModel, cacheManager: CacheManagerInterface)
 }
 
 // TableViewCellInterface'e extension yazmamın sebebi default olarak cacheManager'ı vermek için veya extension yazmayıp updateUI() fonksiyonunu çağırdığı yer yerde cacheManager vericem
@@ -41,7 +41,7 @@ extension TableViewCell: TableViewCellInterface {
           viewModel.viewDidLoad()
       }
 
-    func updateUI(with book: BookModel, cacheManager: CacheManaging = CacheManager.shared) {
+    func updateUI(with book: BookModel, cacheManager: CacheManagerInterface = CacheManager.shared) {
         titleLabel.text = book.name
         authorLabel.text = book.artistName
         dateLabel.text = book.date?.convertToMonthDayYearFormat()

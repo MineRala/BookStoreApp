@@ -7,32 +7,42 @@
 import Foundation
 @testable import BookStoreApp
 
-final class MockCoreDataManager: CoreDataManager {
-
-    override init() {
-        super.init()
-    }
-
+final class MockCoreDataManager: CoreDataManagerProtocol {
     var addFavoriteCalled = false
     var removeFavoriteCalled = false
     var toggleFavoriteCalled = false
-
+    var isFavorite = false
     var favoriteBookPassed: BookModel?
-    var bookIdPassed: String?
 
-    // Mock methods
-    override func addFavorite(with book: BookModel) {
+    var favoriteBooks: [String: BookModel] = [:]
+
+    func addFavorite(with book: BookModel) {
         addFavoriteCalled = true
         favoriteBookPassed = book
+        favoriteBooks[book.id ?? ""] = book
     }
 
-    override func removeFavorite(bookId: String) {
+    func removeFavorite(bookId: String) {
         removeFavoriteCalled = true
-        bookIdPassed = bookId
+        favoriteBooks.removeValue(forKey: bookId)
     }
 
-    override func toggleFavorite(book: BookModel) {
+    func toggleFavorite(book: BookModel) {
         toggleFavoriteCalled = true
         favoriteBookPassed = book
+
+        if let bookId = book.id {
+            if favoriteBooks[bookId] != nil {
+                isFavorite = false
+                removeFavorite(bookId: bookId)
+            } else {
+                isFavorite = true
+                addFavorite(with: book)
+            }
+        }
+    }
+
+    func isBookFavorite(bookId: String) -> Bool {
+        return favoriteBooks[bookId] != nil
     }
 }

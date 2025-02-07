@@ -14,7 +14,7 @@ final class MockDetailViewController: DetailViewControllerInterface {
     var updateFavoriteButtonIconCalled = false
     var rightBarButtonItemCalled = false
 
-    func updateUI(with book: BookModel, cacheManager: any BookStoreApp.CacheManaging) {
+    func updateUI(with book: BookModel, cacheManager: any BookStoreApp.CacheManagerInterface) {
         updateUICalled = true
     }
 

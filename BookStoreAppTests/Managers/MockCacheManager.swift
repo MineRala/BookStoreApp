@@ -8,7 +8,7 @@
 import XCTest
 @testable import BookStoreApp
 
-class MockCacheManager: CacheManaging {
+class MockCacheManager: CacheManagerInterface {
     var imageToReturn: UIImage?
     var loadImageCalled = false
     private var cachedImages = [String: UIImage]()

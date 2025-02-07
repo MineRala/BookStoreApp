@@ -7,12 +7,16 @@
 
 import UIKit
 
+protocol SearchViewControllerInterface: AnyObject {
+
+}
+
 final class SearchViewController: UIViewController {
     // MARK: IBOutlets
-    @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var searchBar: UISearchBar!
-    @IBOutlet private weak var emptyLabel: UILabel!
-    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var emptyLabel: UILabel!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     // MARK: Properties
     private var books = [BookModel]()

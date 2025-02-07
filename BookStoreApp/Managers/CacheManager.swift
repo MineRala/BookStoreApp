@@ -7,13 +7,13 @@
 
 import UIKit
 
-protocol CacheManaging {
+protocol CacheManagerInterface {
     func getImage(for url: String) -> UIImage?
     func cacheImage(_ image: UIImage, for url: String)
     func loadImage(from url: String, completion: @escaping (UIImage?) -> Void)
 }
 
-final class CacheManager: CacheManaging {
+final class CacheManager: CacheManagerInterface {
     static let shared = CacheManager()
     private let imageCache = NSCache<NSString, UIImage>()
 

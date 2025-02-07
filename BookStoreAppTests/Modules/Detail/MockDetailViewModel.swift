@@ -10,9 +10,17 @@ import Foundation
 
 final class MockDetailViewModel: DetailViewModelInterface {
     var favoriteButtonTappedCalled = false
+    var viewDidLoadCalled = false
+    var viewWillAppearCalled = false
 
-    func viewDidLoad() { }
-    func viewWillAppear() { }
+    func viewDidLoad() {
+        viewDidLoadCalled = true
+    }
+
+    func viewWillAppear() {
+        viewWillAppearCalled = true
+    }
+
     func favoriteButtonTapped() {
         favoriteButtonTappedCalled = true
     }

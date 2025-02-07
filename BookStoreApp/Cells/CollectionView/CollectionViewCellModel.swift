@@ -16,9 +16,9 @@ final class CollectionViewCellViewModel {
     private weak var view: CollectionViewCellInterface?
     
     private var book: BookModel
-    private var coreDataManager: CoreDataManager
+    private var coreDataManager: CoreDataManagerProtocol
 
-    init(book: BookModel, coreDataManager: CoreDataManager = CoreDataManager.shared, view: CollectionViewCellInterface) {
+    init(book: BookModel, coreDataManager: CoreDataManagerProtocol = CoreDataManager.shared, view: CollectionViewCellInterface) {
         self.book = book
         self.coreDataManager = coreDataManager
         self.view = view

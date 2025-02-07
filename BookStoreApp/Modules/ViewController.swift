@@ -52,6 +52,7 @@ extension ViewController {
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 10
         layout.minimumLineSpacing = 10
+        collectionView.register(UINib(nibName: Constants.collectionViewCell, bundle: nil), forCellWithReuseIdentifier: Constants.collectionViewCell)
         collectionView.collectionViewLayout = layout
     }
 
@@ -182,40 +183,14 @@ extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return bookData.count
     }
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.collectionViewCell, for: indexPath) as? CollectionViewCell else {
             return UICollectionViewCell()
         }
         cell.configureCell(with: CollectionViewCellViewModel(book: bookData[indexPath.item], view: cell))
-
         return cell
     }
-
-    // UICollectionView ya da UITableView'dan çağırmak
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let selectedBook = bookData[indexPath.item]
-//
-//        // Storyboard'dan DetailViewController'ı açıyoruz
-//        if let detailVC = storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController {
-//            // Burada selectedBook'u DetailViewController'a geçiyoruz
-//            detailVC.book = selectedBook
-//            navigationController?.pushViewController(detailVC, animated: true)
-//        }
-//    }
-
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        // Seçilen book verisini alıyoruz
-//        let selectedBook = bookData[indexPath.item]
-//
-//        // Storyboard kullanmıyoruz, direkt olarak programatik başlatıyoruz
-//        let detailVC = DetailViewController(book: selectedBook)
-//
-//        // Navigation controller üzerinden push ediyoruz
-//        navigationController?.pushViewController(detailVC, animated: true)
-//    }
-
-
-
 }
 
 
@@ -226,6 +201,18 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         let totalSpacing = spacing * 2
         let width = (collectionView.frame.width - totalSpacing) / 2
         return CGSize(width: width, height: width * 1.5)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+
+        let storyboard = UIStoryboard(name: Constants.main, bundle: nil)
+        if let detailVC = storyboard.instantiateViewController(withIdentifier: Constants.detailViewController) as? DetailViewController {
+            detailVC.book = bookData[indexPath.item]
+            navigationController?.pushViewController(detailVC, animated: true)
+        } else {
+            print("DetailViewController not instantiate!")
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

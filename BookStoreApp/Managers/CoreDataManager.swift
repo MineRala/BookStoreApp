@@ -8,7 +8,14 @@
 import CoreData
 import UIKit
 
-class CoreDataManager {
+protocol CoreDataManagerProtocol {
+    func addFavorite(with book: BookModel)
+    func removeFavorite(bookId: String)
+    func toggleFavorite(book: BookModel)
+    func isBookFavorite(bookId: String) -> Bool
+}
+
+class CoreDataManager: CoreDataManagerProtocol {
 
     static let shared = CoreDataManager()
 
@@ -18,7 +25,7 @@ class CoreDataManager {
         persistentContainer = NSPersistentContainer(name: Constants.favoritePersistentContainerName)
         persistentContainer.loadPersistentStores { (_, error) in
             if let error = error {
-                fatalError("Core Data yüklenirken hata oluştu: \(error)")
+                fatalError("Error loading Core Data: \(error)")
             }
         }
     }

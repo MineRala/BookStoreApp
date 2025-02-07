@@ -9,12 +9,10 @@
 import UIKit
 
 final class MockTableViewCell: TableViewCellInterface {
-
     var isUpdateUICalled = false
     var updatedBook: BookModel?
 
-// ViewModel’in updateUI(with:BookModel) methodunun çağırılması kontrol edilir.
-    func updateUI(with book: BookStoreApp.BookModel, cacheManager: any BookStoreApp.CacheManaging) {
+    func updateUI(with book: BookStoreApp.BookModel, cacheManager: any BookStoreApp.CacheManagerInterface) {
         isUpdateUICalled = true
         updatedBook = book
     }
