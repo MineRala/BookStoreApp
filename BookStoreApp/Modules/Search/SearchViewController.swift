@@ -8,7 +8,10 @@
 import UIKit
 
 protocol SearchViewControllerInterface: AnyObject {
-
+    func configureUI()
+    func setEmptyLabelVisibility(isVisible: Bool)
+    func tableViewReload()
+    func activityIndicatorHidden()
 }
 
 final class SearchViewController: UIViewController {
@@ -19,20 +22,18 @@ final class SearchViewController: UIViewController {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     // MARK: Properties
-    private var books = [BookModel]()
-    private var filteredBooks = [BookModel]()
+    lazy var viewModel: SearchViewModelInterface = SearchViewModel(view: self)
 
     // MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
-        loadData()
+        viewModel.viewDidLoad()
     }
 }
 
-// MARK: - UI
-extension SearchViewController {
-    private func configureUI() {
+// MARK: - SearchViewControllerInterface
+extension SearchViewController: SearchViewControllerInterface {
+    func configureUI() {
         searchBar.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
@@ -44,35 +45,21 @@ extension SearchViewController {
         searchBar.placeholder = Strings.searchPlaceholder
     }
 
-    private func updateEmptyLabelVisibility() {
-        if books.isEmpty || filteredBooks.isEmpty {
-            emptyLabel.isHidden = false
-            tableView.isHidden = true
-        } else {
-            emptyLabel.isHidden = true
-            tableView.isHidden = false
+    func setEmptyLabelVisibility(isVisible: Bool) {
+        emptyLabel.isHidden = !isVisible
+        tableView.isHidden = isVisible
+    }
+
+    func tableViewReload() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
         }
     }
-}
 
-// MARK: - Logic
-extension SearchViewController {
-    private func loadData() {
-        #warning("Pdf de search ekranında paginationdan bahsetmediği için eklemedim.")
-        NetworkManager.shared.makeRequest(endpoint: .bookModel, type: ResultModel.self) { [weak self] result in
-            guard let self else { return }
-            DispatchQueue.main.async {
-                self.activityIndicator.setActiveState(isActive: false)
-                self.tableView.isHidden = false
-                switch result {
-                case .success(let resultModel):
-                    self.books = resultModel.feed.results
-                    self.filteredBooks = self.books
-                    self.tableView.reloadData()
-                case .failure(let error):
-                    print(error)
-                }
-            }
+    func activityIndicatorHidden() {
+        DispatchQueue.main.async {
+            self.activityIndicator.setActiveState(isActive: false)
+            self.tableView.isHidden = false
         }
     }
 }
@@ -80,19 +67,7 @@ extension SearchViewController {
 // MARK: - SearchBar Delegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.isEmpty {
-            filteredBooks = books
-        } else {
-            filteredBooks = books.filter { book in
-                if let bookName = book.name?.lowercased(),
-                   let authorName = book.artistName?.lowercased() {
-                    return bookName.contains(searchText.lowercased()) || authorName.contains(searchText.lowercased())
-                }
-                return false
-            }
-        }
-        updateEmptyLabelVisibility()
-        tableView.reloadData()
+        viewModel.searchBarTexrDidChange(with: searchText)
     }
 
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
@@ -104,16 +79,16 @@ extension SearchViewController: UISearchBarDelegate {
            searchBar.text = Constants.emptyString
            searchBar.resignFirstResponder()
            searchBar.showsCancelButton = false
-           filteredBooks = books
-           updateEmptyLabelVisibility()
-           tableView.reloadData()
+           viewModel.setFilteredBooksWithBooks()
+           viewModel.updateEmptyLabelVisibility()
+           tableViewReload()
        }
 }
 
 // MARK: - TableView DataSource
 extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredBooks.count
+        viewModel.numberOfRowsInSection
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -121,7 +96,7 @@ extension SearchViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        cell.configureCell(with: TableViewCellViewModel(book: filteredBooks[indexPath.row], view: cell))
+        cell.configureCell(with: TableViewCellViewModel(book: viewModel.getBook(index: indexPath.row), view: cell))
         return cell
     }
 }
@@ -132,7 +107,7 @@ extension SearchViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         let storyboard = UIStoryboard(name: Constants.main, bundle: nil)
         if let detailVC = storyboard.instantiateViewController(withIdentifier: Constants.detailViewController) as? DetailViewController {
-            detailVC.book = filteredBooks[indexPath.row]
+            detailVC.book = viewModel.getBook(index: indexPath.row)
             navigationController?.pushViewController(detailVC, animated: true)
         } else {
             print("DetailViewController not instantiate!")
@@ -140,6 +115,6 @@ extension SearchViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        140
+        viewModel.heightForRowAt
     }
 }

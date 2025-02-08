@@ -15,7 +15,7 @@ struct FeedModel: Codable {
     var results: [BookModel]
 }
 
-struct BookModel: Codable {
+struct BookModel: Codable, Equatable {
     var artistName: String?
     var id: String?
     var name: String?

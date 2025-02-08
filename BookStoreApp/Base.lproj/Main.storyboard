@@ -178,7 +178,7 @@
         <!--Search Book-->
         <scene sceneID="cvK-GJ-zMX">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="wn8-Q3-ejf" customClass="SearchViewController" customModule="BookStoreApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController restorationIdentifier="SearchViewController" storyboardIdentifier="SearchViewController" modalPresentationStyle="fullScreen" id="wn8-Q3-ejf" customClass="SearchViewController" customModule="BookStoreApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Vu3-iC-IZh">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
