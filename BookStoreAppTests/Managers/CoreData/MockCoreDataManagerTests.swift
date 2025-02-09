@@ -1,12 +1,21 @@
+//
+//  MockCoreDataManagerTests.swift
+//  BookStoreAppTests
+//
+//  Created by Mine Rala on 6.02.2025.
+//
+
 import Foundation
 import CoreData
 import XCTest
 @testable import BookStoreApp
 
 final class MockCoreDataManagerTests: XCTestCase {
+    // MARK: - Properties
     var mockCoreDataManager: MockCoreDataManager!
     var book: BookModel!
 
+    // MARK: - Setup & Teardown
     override func setUp() {
         super.setUp()
 

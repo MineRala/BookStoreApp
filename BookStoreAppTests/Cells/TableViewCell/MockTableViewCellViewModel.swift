@@ -9,8 +9,10 @@
 import UIKit
 
 final class MockTableViewCellViewModel: TableViewCellViewModelInterface {
+    // MARK: - Test Flags
     var viewDidLoadCalled = false
 
+    // MARK: - Methods
     func viewDidLoad() {
         viewDidLoadCalled = true
     }

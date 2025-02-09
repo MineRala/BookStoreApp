@@ -9,8 +9,10 @@ import XCTest
 @testable import BookStoreApp
 
 final class NetworkManagerTests: XCTestCase {
+    // MARK: - Properties
     var mockNetworkManager: MockNetworkManager!
 
+    // MARK: - Setup & Teardown
     override func setUp() {
         super.setUp()
         mockNetworkManager = MockNetworkManager()
@@ -62,6 +64,7 @@ final class NetworkManagerTests: XCTestCase {
             case .success(let resultModel):
                 XCTAssertEqual(resultModel.feed.results.count, 2, "The number of books should be 2.")
                 XCTAssertEqual(resultModel.feed.results[0].name, "The You You Are", "The title of the first book is incorrect.")
+                XCTAssertEqual(resultModel.feed.results[1].name, "Severance", "The title of the second book is incorrect.")
                 expectation.fulfill()
             case .failure:
                 XCTFail("The API call that was supposed to succeed failed.")
@@ -86,6 +89,50 @@ final class NetworkManagerTests: XCTestCase {
                 XCTAssertEqual(error, .unableToComplete, "The returned error code is incorrect.")
                 expectation.fulfill()
             }
+        }
+
+        wait(for: [expectation], timeout: 2.0)
+    }
+
+    func testLoadListOfBooksSuccess() {
+        // Given
+        let mockBooks: [BookModel] = [
+            BookModel(artistName: "Dr. Ricken Lazlo Hale, PhD", name: "The You You Are"),
+            BookModel(artistName: "Anonymous", name: "Severance")
+        ]
+
+        mockNetworkManager.mockBookList = mockBooks
+
+        let expectation = self.expectation(description: "The loadListOfBooks function should return paginated results.")
+
+        // When
+        mockNetworkManager.loadListOfBooks(currentPage: 1, itemsPerPage: 1) { books in
+            // First page should return only 1 book (pagination test)
+            XCTAssertEqual(books.count, 1, "The number of books in the first page should be 1.")
+            XCTAssertEqual(books.first?.name, "The You You Are", "The title of the first book is incorrect.")
+
+            // When we load the second page
+            self.mockNetworkManager.loadListOfBooks(currentPage: 2, itemsPerPage: 1) { books in
+                XCTAssertEqual(books.count, 1, "The number of books in the second page should be 1.")
+                XCTAssertEqual(books.first?.name, "Severance", "The title of the second book is incorrect.")
+
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: 2.0)
+    }
+
+    func testLoadListOfBooksFailure() {
+        // Given
+        mockNetworkManager.shouldReturnError = true
+
+        let expectation = self.expectation(description: "The loadListOfBooks function should return an empty array on error.")
+
+        // When
+        mockNetworkManager.loadListOfBooks(currentPage: 1, itemsPerPage: 10) { books in
+            XCTAssertEqual(books.count, 0, "The number of books should be 0 on failure.")
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 2.0)

@@ -8,11 +8,15 @@
 import XCTest
 @testable import BookStoreApp
 
-class MockCacheManager: CacheManagerInterface {
-    var imageToReturn: UIImage?
+final class MockCacheManager: CacheManagerInterface {
+    // MARK: - Test Flags
     var loadImageCalled = false
+    
+    // MARK: - Properties
+    var imageToReturn: UIImage?
     private var cachedImages = [String: UIImage]()
 
+    // MARK: - Methods
     func getImage(for url: String) -> UIImage? {
         return cachedImages[url]
     }

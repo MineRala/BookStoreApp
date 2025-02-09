@@ -8,7 +8,8 @@
 import Foundation
 @testable import BookStoreApp
 
-class MockCollectionViewCellViewModel: CollectionViewCellViewModelInterface {
+final class MockCollectionViewCellViewModel: CollectionViewCellViewModelInterface {
+    // MARK: - Test Flags
     var favoriteButtonTappedCalled = false
     var viewDidLoadCalled = false
     var mockCoreDataManager: MockCoreDataManager
@@ -19,6 +20,7 @@ class MockCollectionViewCellViewModel: CollectionViewCellViewModelInterface {
         self.mockCoreDataManager = coreDataManager
     }
 
+    // MARK: - Methods
     func viewDidLoad() {
         viewDidLoadCalled = true
     }

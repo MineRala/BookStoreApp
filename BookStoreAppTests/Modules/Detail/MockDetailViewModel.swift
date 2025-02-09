@@ -9,10 +9,12 @@ import Foundation
 @testable import BookStoreApp
 
 final class MockDetailViewModel: DetailViewModelInterface {
+    // MARK: - Test Flags
     var favoriteButtonTappedCalled = false
     var viewDidLoadCalled = false
     var viewWillAppearCalled = false
 
+    // MARK: - Methods
     func viewDidLoad() {
         viewDidLoadCalled = true
     }

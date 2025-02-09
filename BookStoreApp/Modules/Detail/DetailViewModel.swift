@@ -14,9 +14,10 @@ protocol DetailViewModelInterface {
 }
 
 final class DetailViewModel {
+    // MARK: Properties
+    private weak var view: DetailViewControllerInterface?
     private var book: BookModel
     private let coreDataManager: CoreDataManagerProtocol
-    private var view: DetailViewControllerInterface?
 
     init(book: BookModel, coreDataManager: CoreDataManagerProtocol = CoreDataManager.shared, view: DetailViewControllerInterface) {
         self.book = book

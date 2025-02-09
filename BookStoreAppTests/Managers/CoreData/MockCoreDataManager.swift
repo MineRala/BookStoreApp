@@ -4,18 +4,22 @@
 //
 //  Created by Mine Rala on 6.02.2025.
 //
+
 import Foundation
 @testable import BookStoreApp
 
 final class MockCoreDataManager: CoreDataManagerProtocol {
+    // MARK: - Test Flags
     var addFavoriteCalled = false
     var removeFavoriteCalled = false
     var toggleFavoriteCalled = false
     var isFavorite = false
-    var favoriteBookPassed: BookModel?
 
+    // MARK: - Properties
+    var favoriteBookPassed: BookModel?
     var favoriteBooks: [String: BookModel] = [:]
 
+    // MARK: - Methods
     func addFavorite(with book: BookModel) {
         addFavoriteCalled = true
         favoriteBookPassed = book
@@ -45,4 +49,5 @@ final class MockCoreDataManager: CoreDataManagerProtocol {
     func isBookFavorite(bookId: String) -> Bool {
         return favoriteBooks[bookId] != nil
     }
+
 }

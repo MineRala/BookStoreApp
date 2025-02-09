@@ -9,6 +9,7 @@ import Foundation
 
 protocol NetworkManagerProtocol {
     func makeRequest<T: Decodable>(endpoint: Endpoint, type: T.Type, completed: @escaping (Result<T, BAError>) -> Void)
+    func loadListOfBooks(currentPage: Int, itemsPerPage: Int, completion: @escaping ([BookModel]) -> Void)
 }
 
 final class NetworkManager: NetworkManagerProtocol {

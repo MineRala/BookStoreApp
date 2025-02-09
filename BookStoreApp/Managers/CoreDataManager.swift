@@ -15,7 +15,7 @@ protocol CoreDataManagerProtocol {
     func isBookFavorite(bookId: String) -> Bool
 }
 
-class CoreDataManager: CoreDataManagerProtocol {
+final class CoreDataManager: CoreDataManagerProtocol {
 
     static let shared = CoreDataManager()
 

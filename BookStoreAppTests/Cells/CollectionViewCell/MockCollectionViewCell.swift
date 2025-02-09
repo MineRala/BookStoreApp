@@ -8,10 +8,12 @@
 @testable import BookStoreApp
 import UIKit
 
-class MockCollectionViewCell: CollectionViewCellInterface {
+final class MockCollectionViewCell: CollectionViewCellInterface {
+    // MARK: - Test Flags
     var updateUICalled = false
     var bookPassed: BookModel?
 
+    // MARK: - Methods
     func updateUI(with book: BookModel) {
         updateUICalled = true
         bookPassed = book

@@ -8,13 +8,15 @@
 import Foundation
 
 final class MockSearchViewModel: SearchViewModelInterface {
-    var books: [BookModel] = []
-    var filteredBooks: [BookModel] = []
-
+    // MARK: - Test Flags
     var isViewDidLoadCalled = false
     var isUpdateEmptyLabelVisibilityCalled = false
     var isSearchBarTextDidChangeCalled = false
     var isSetFilteredBooksWithBooksCalled = false
+
+    // MARK: Properties
+    var books: [BookModel] = []
+    var filteredBooks: [BookModel] = []
 
     var numberOfRowsInSection: Int {
         filteredBooks.count
@@ -39,7 +41,7 @@ final class MockSearchViewModel: SearchViewModelInterface {
         isUpdateEmptyLabelVisibilityCalled = true
     }
 
-    func searchBarTexrDidChange(with text: String) {
+    func searchBarTextDidChange(with text: String) {
         isSearchBarTextDidChangeCalled = true
 
         if text.isEmpty {

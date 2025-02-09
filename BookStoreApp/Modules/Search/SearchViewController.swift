@@ -67,7 +67,7 @@ extension SearchViewController: SearchViewControllerInterface {
 // MARK: - SearchBar Delegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        viewModel.searchBarTexrDidChange(with: searchText)
+        viewModel.searchBarTextDidChange(with: searchText)
     }
 
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {

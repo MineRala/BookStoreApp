@@ -1,12 +1,15 @@
 import XCTest
 @testable import BookStoreApp
 
+// MARK: - SearchViewModel Tests
 final class SearchViewModelTests: XCTestCase {
+    // MARK: - Properties
     var viewModel: SearchViewModel!
     var mockViewController: MockSearchViewController!
     var mockNetworkManager: MockNetworkManager!
     var initialBooks: [BookModel]!
 
+    // MARK: - Setup & Teardown
     override func setUp() {
         super.setUp()
         initialBooks = [
@@ -28,24 +31,27 @@ final class SearchViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - ViewModel Initialization Tests
     func testViewDidLoad() {
         // Given
-        let mockResult = ResultModel(feed: FeedModel(results: [BookModel(artistName: "Author", name: "Test Book")]))
+        let mockResult = ResultModel(feed: FeedModel(results: initialBooks))
         let mockData = try! JSONEncoder().encode(mockResult)
         mockNetworkManager.mockData = mockData
 
         let expectation = self.expectation(description: "tableViewReload should be called")
 
+        // When
         viewModel.viewDidLoad()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.async {
             // Then
-            XCTAssertTrue(self.mockViewController.isConfigureUICalled, "Configure UI should be called.")
+            XCTAssertTrue(self.mockViewController.isConfigureUICalled, "Configure UI should be called after data load.")
             XCTAssertTrue(self.mockViewController.isActivityIndicatorHiddenCalled, "Activity Indicator should be hidden after data load.")
             XCTAssertTrue(self.mockViewController.isTableViewReloadCalled, "Table view should be reloaded after data is loaded.")
 
             expectation.fulfill()
         }
+
         waitForExpectations(timeout: 2, handler: nil)
     }
 
@@ -56,10 +62,13 @@ final class SearchViewModelTests: XCTestCase {
         viewModel.filteredBooks = initialBooks
 
         // When
-        viewModel.searchBarTexrDidChange(with: "")
+        viewModel.searchBarTextDidChange(with: "")
 
         // Then
         XCTAssertEqual(viewModel.filteredBooks.count, 2, "Filtered books should contain all books when search text is empty.")
+        XCTAssertTrue(mockViewController.isSetEmptyLabelVisibilityCalled, "Empty label visibility should be updated.")
+        XCTAssertFalse(mockViewController.isEmptyLabelVisible, "Empty label should be visible when search text is empty.")
+        XCTAssertTrue(self.mockViewController.isTableViewReloadCalled, "Table view should be reloaded when search text is cleared.")
     }
 
     func testSearchBarTextDidChangeWithNonEmptyText() {
@@ -67,10 +76,14 @@ final class SearchViewModelTests: XCTestCase {
         viewModel.books = initialBooks
 
         // When
-        viewModel.searchBarTexrDidChange(with: "Severance")
+        viewModel.searchBarTextDidChange(with: "Severance")
 
         // Then
         XCTAssertEqual(viewModel.filteredBooks.count, 1, "Filtered books should contain only one book when search text matches 'Severance'.")
+        XCTAssertEqual(viewModel.filteredBooks.first?.name, "Severance", "The filtered book should be 'Severance'.")
+        XCTAssertTrue(mockViewController.isSetEmptyLabelVisibilityCalled, "Empty label visibility should be updated.")
+        XCTAssertFalse(mockViewController.isEmptyLabelVisible, "Empty label should be hidden when books are filtered.")
+        XCTAssertTrue(self.mockViewController.isTableViewReloadCalled, "Table view should be reloaded after search text is applied.")
     }
 
     // MARK: - Empty Label Tests
@@ -84,7 +97,7 @@ final class SearchViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mockViewController.isSetEmptyLabelVisibilityCalled, "Empty label visibility should be updated when there are no books.")
-        XCTAssertTrue(mockViewController.isEmptyLabelVisible, "Empty label should be visible when books are not available.")
+        XCTAssertTrue(mockViewController.isEmptyLabelVisible, "Empty label should be visible when no books are available.")
     }
 
     func testUpdateEmptyLabelVisibilityWhenBooksAreNotEmpty() {
@@ -96,8 +109,8 @@ final class SearchViewModelTests: XCTestCase {
         viewModel.updateEmptyLabelVisibility()
 
         // Then
-        XCTAssertTrue(mockViewController.isSetEmptyLabelVisibilityCalled, "Empty label visibility should be updated when there are books.")
-        XCTAssertFalse(mockViewController.isEmptyLabelVisible, "Empty label should be hidden when books are available.")
+        XCTAssertTrue(mockViewController.isSetEmptyLabelVisibilityCalled, "Empty label visibility should be updated when books are available.")
+        XCTAssertFalse(mockViewController.isEmptyLabelVisible, "Empty label should be hidden when there are books available.")
     }
 
     // MARK: - Filtered Books Tests
@@ -136,5 +149,16 @@ final class SearchViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(rowCount, 2, "Number of rows in section should match the count of filteredBooks.")
+    }
+
+    func testHeightForRowAt() {
+        // Given
+        let expectedHeight: Double = 140
+
+        // When
+        let rowHeight = viewModel.heightForRowAt
+
+        // Then
+        XCTAssertEqual(rowHeight, expectedHeight, "The row height should be equal to \(expectedHeight).")
     }
 }

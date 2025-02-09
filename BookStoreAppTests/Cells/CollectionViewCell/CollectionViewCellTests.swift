@@ -8,12 +8,15 @@
 import XCTest
 @testable import BookStoreApp
 
+// MARK: - CollectionViewCell Tests
 final class CollectionViewCellTests: XCTestCase {
+    // MARK: - Properties
     var collectionViewCell: CollectionViewCell!
     var mockViewModel: MockCollectionViewCellViewModel!
     var book: BookModel!
     var mockCoreDataManager: MockCoreDataManager!
 
+    // MARK: - Setup & Teardown
     override func setUp() {
         super.setUp()
 
@@ -41,19 +44,7 @@ final class CollectionViewCellTests: XCTestCase {
         super.tearDown()
     }
 
-    func testUpdateUIWithBook() {
-        // When
-        collectionViewCell.updateUI(with: book)
-
-        // Then
-        XCTAssertEqual(collectionViewCell.label.text, "Severance", "Label güncellenmedi!")
-
-        let expectedImage = UIImage(systemName: "star.fill")?
-            .withTintColor(.yellow, renderingMode: .alwaysOriginal)
-
-        XCTAssertEqual(collectionViewCell.favoriteButton.image(for: .normal)?.cgImage, expectedImage?.cgImage, "Favori butonunun ikonu doğru değil!")
-    }
-
+    // MARK: - Lifecycle Test
     func testViewModelViewDidLoadCalled() {
         // When
         collectionViewCell.configureCell(with: mockViewModel)
@@ -62,24 +53,38 @@ final class CollectionViewCellTests: XCTestCase {
         XCTAssertTrue(mockViewModel.viewDidLoadCalled, "viewDidLoad should be called in the view model when the cell is configured")
     }
 
+    // MARK: -  UI Test
+    func testUpdateUIWithBook() {
+        // When
+        collectionViewCell.updateUI(with: book)
+
+        // Then
+        XCTAssertEqual(collectionViewCell.label.text, "Severance", "Label not updated!")
+
+        let expectedImage = UIImage(systemName: "star.fill")?
+            .withTintColor(.yellow, renderingMode: .alwaysOriginal)
+
+        XCTAssertEqual(collectionViewCell.favoriteButton.image(for: .normal)?.cgImage, expectedImage?.cgImage, "Favori butonunun ikonu doğru değil!")
+    }
+
+    // MARK: - Favorite Button Test
     func testFavoriteButtonTapped() {
         // Given
         collectionViewCell.configureCell(with: mockViewModel)
 
-        XCTAssertFalse(mockCoreDataManager.isFavorite, "Başlangıçta favori olmamalı!")
+        XCTAssertFalse(mockCoreDataManager.isFavorite, "It should not be a favorite initially!")
 
         // When
         collectionViewCell.favoriteButtonTapped(UIButton())
 
         // Then
-        XCTAssertTrue(mockViewModel.favoriteButtonTappedCalled, "favoriteButtonTapped() çağrılmadı!")
-        XCTAssertTrue(mockCoreDataManager.isFavorite, "Favori durumu doğru güncellenmedi!")
+        XCTAssertTrue(mockViewModel.favoriteButtonTappedCalled, "favoriteButtonTapped() was not called!")
+        XCTAssertTrue(mockCoreDataManager.isFavorite, "Favorite status was not updated correctly!")
 
         // When
         collectionViewCell.favoriteButtonTapped(UIButton())
 
         // Then
-        XCTAssertFalse(mockCoreDataManager.isFavorite, "Favori durumu geri alınmadı!")
+        XCTAssertFalse(mockCoreDataManager.isFavorite, "The favorite status was not reverted!")
     }
-
 }

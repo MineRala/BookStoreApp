@@ -13,7 +13,7 @@ protocol SearchViewModelInterface {
 
     func viewDidLoad()
     func updateEmptyLabelVisibility()
-    func searchBarTexrDidChange(with text: String)
+    func searchBarTextDidChange(with text: String)
     func setFilteredBooksWithBooks()
     func getBook(index: Int) -> BookModel
 }
@@ -72,7 +72,7 @@ extension SearchViewModel: SearchViewModelInterface {
         }
     }
 
-    func searchBarTexrDidChange(with text: String) {
+    func searchBarTextDidChange(with text: String) {
         if text.isEmpty {
             filteredBooks = books
         } else {

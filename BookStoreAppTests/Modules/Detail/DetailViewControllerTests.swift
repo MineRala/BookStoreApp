@@ -9,11 +9,13 @@ import XCTest
 @testable import BookStoreApp
 
 final class DetailViewControllerTests: XCTestCase {
-    var detailViewController: DetailViewController!
+    // MARK: - Properties
+    var viewController: DetailViewController!
     var mockViewModel: MockDetailViewModel!
     var mockCacheManager: MockCacheManager!
     var book: BookModel!
 
+    // MARK: - Setup & Teardown
     override func setUp() {
         super.setUp()
 
@@ -26,58 +28,88 @@ final class DetailViewControllerTests: XCTestCase {
         )
 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        detailViewController = storyboard.instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController
-        detailViewController.loadViewIfNeeded()
+        viewController = storyboard.instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController
+        viewController.loadViewIfNeeded()
 
         mockCacheManager = MockCacheManager()
         mockCacheManager.imageToReturn = UIImage(named: "image")
 
         mockViewModel = MockDetailViewModel()
-        detailViewController.viewModel = mockViewModel
+        viewController.viewModel = mockViewModel
+        viewController.book = book
     }
 
     override func tearDown() {
-        detailViewController = nil
+        viewController = nil
         mockViewModel = nil
         mockCacheManager = nil
         book = nil
         super.tearDown()
     }
 
-    func testUpdateUIWithBook() {
-        // When
-        detailViewController.updateUI(with: book, cacheManager: mockCacheManager)
-
-        // Then
-        XCTAssertEqual(detailViewController.titleLabel.text, "Severance", "Kitap adı yanlış!")
-        XCTAssertEqual(detailViewController.authorLabel.text, "Anonymous", "Yazar adı yanlış!")
-        XCTAssertNotNil(detailViewController.imageView.image, "Resim yüklenmedi!")
-    }
-
+    // MARK: - View Lifecycle Tests
     func testViewModelViewDidLoadCalled() {
         // Given
-        detailViewController.book = book
+        XCTAssertNotNil(viewController.viewModel, "ViewModel should not be nil!")
 
         // When
-        detailViewController.viewDidLoad()
+        viewController.viewDidLoad()
 
         // Then
-        XCTAssertTrue(mockViewModel.viewDidLoadCalled, "viewDidLoad metodu çağrılmadı!")
+        XCTAssertTrue(mockViewModel.viewDidLoadCalled, "viewDidLoad method was not called!")
     }
 
     func testViewModelViewWillAppearCalled() {
+        // Given
+        XCTAssertNotNil(viewController.viewModel, "ViewModel should not be nil!")
+
         // When
-        detailViewController.viewWillAppear(true)
+        viewController.viewWillAppear(true)
 
         // Then
-        XCTAssertTrue(mockViewModel.viewWillAppearCalled, "viewWillAppear metodu çağrılmadı!")
+        XCTAssertTrue(mockViewModel.viewWillAppearCalled, "viewWillAppear method was not called!")
     }
 
-    func testFavoriteButtonTappedCallsViewModelMethod() {
+    // MARK: - UI Update Tests
+    func testUpdateUIWithBook() {
         // When
-        detailViewController.favoriteButtonTapped()
+        viewController.updateUI(with: book, cacheManager: mockCacheManager)
 
         // Then
-        XCTAssertTrue(mockViewModel.favoriteButtonTappedCalled, "favoriteButtonTapped metodu çağrılmadı!")
+        XCTAssertEqual(viewController.titleLabel.text, "Severance", "Book title is incorrect!")
+        XCTAssertEqual(viewController.authorLabel.text, "Anonymous", "Author name is incorrect!")
+
+        let expectedDate = book.date?.convertToMonthDayYearFormat()
+        XCTAssertEqual(viewController.dateLabel.text, expectedDate, "Date label should display the correct date format!")
+
+        XCTAssertNotNil(viewController.imageView.image, "Image was not loaded!")
+        XCTAssertTrue(mockCacheManager.loadImageCalled, "loadImage method was not called on cache manager!")
+        XCTAssertEqual(viewController.imageView.image, mockCacheManager.imageToReturn, "Loaded image does not match the expected mock image!")
+    }
+
+    // MARK: - Favorite Button Tests
+    func testFavoriteButtonTappedCallsViewModelMethod() {
+        // Given
+        XCTAssertNotNil(viewController.viewModel, "ViewModel should not be nil!")
+
+        // When
+        viewController.favoriteButtonTapped()
+
+        // Then
+        XCTAssertTrue(mockViewModel.favoriteButtonTappedCalled, "favoriteButtonTapped method was not called!")
+    }
+
+    func testFavoriteButtonIconUpdates() {
+        // When
+        viewController.updateFavoriteButtonIcon(isFavorite: true)
+
+        // Then
+        XCTAssertEqual(viewController.favoriteButton.tintColor, .yellow, "Favorite button should be yellow when favorite.")
+
+        // When
+        viewController.updateFavoriteButtonIcon(isFavorite: false)
+
+        // Then
+        XCTAssertEqual(viewController.favoriteButton.tintColor, .darkGray, "Favorite button should be gray when not favorite.")
     }
 }

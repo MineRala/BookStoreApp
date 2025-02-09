@@ -11,13 +11,6 @@ protocol TableViewCellInterface: AnyObject {
     func updateUI(with book: BookModel, cacheManager: CacheManagerInterface)
 }
 
-// TableViewCellInterface'e extension yazmamın sebebi default olarak cacheManager'ı vermek için veya extension yazmayıp updateUI() fonksiyonunu çağırdığı yer yerde cacheManager vericem
-//extension TableViewCellInterface {
-//    func updateUI(with book: BookModel, cacheManager: CacheManaging = CacheManager.shared) {
-//        updateUI(with: book, cacheManager: cacheManager)
-//    }
-//}
-
 final class TableViewCell: UITableViewCell {
     // MARK: Outlets
     @IBOutlet weak var posterImageView: UIImageView!

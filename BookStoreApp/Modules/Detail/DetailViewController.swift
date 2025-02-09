@@ -20,7 +20,7 @@ final class DetailViewController: UIViewController, DetailViewControllerInterfac
     @IBOutlet weak var dateLabel: UILabel!
 
     // MARK: Attributes
-    private lazy var favoriteButton: UIBarButtonItem = {
+    lazy var favoriteButton: UIBarButtonItem = {
         let button = UIBarButtonItem(
             image: UIImage(systemName: Icons.starFill),
             style: .plain,
@@ -63,7 +63,7 @@ extension DetailViewController {
     func updateUI(with book: BookModel, cacheManager: CacheManagerInterface = CacheManager.shared) {
         titleLabel.text = book.name
         authorLabel.text = book.artistName
-        dateLabel.text = book.date
+        dateLabel.text = book.date?.convertToMonthDayYearFormat()
         imageView.setImage(from: book.imageUrl, cacheManager: cacheManager)
     }
 
@@ -77,8 +77,5 @@ extension DetailViewController {
     @objc func favoriteButtonTapped() {
         guard let viewModel else { return }
         viewModel.favoriteButtonTapped()
-//        DispatchQueue.main.async {
-//
-//        }
     }
 }

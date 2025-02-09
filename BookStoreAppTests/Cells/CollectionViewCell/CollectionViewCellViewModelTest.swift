@@ -8,12 +8,15 @@
 import XCTest
 @testable import BookStoreApp
 
+// MARK: - CollectionViewCellViewModel Tests
 final class CollectionViewCellViewModelTests: XCTestCase {
+    // MARK: - Properties
     var mockCell: MockCollectionViewCell!
     var viewModel: CollectionViewCellViewModel!
     var book: BookModel!
     var mockCoreDataManager: MockCoreDataManager!
 
+    // MARK: - Setup & Teardown
     override func setUp() {
         super.setUp()
 
@@ -31,51 +34,55 @@ final class CollectionViewCellViewModelTests: XCTestCase {
     }
 
     override func tearDown() {
-           viewModel = nil
-           mockCell = nil
-           book = nil
-           mockCoreDataManager = nil
-           super.tearDown()
-       }
+        viewModel = nil
+        mockCell = nil
+        book = nil
+        mockCoreDataManager = nil
+        super.tearDown()
+    }
 
+    // MARK: - Lifecycle Test
     func testViewDidLoadCallsUpdateUI() {
         // When
         viewModel.viewDidLoad()
 
         // Then
-        XCTAssertTrue(mockCell.updateUICalled, "ViewModel'in updateUI metodu çağrılmadı!")
-        XCTAssertEqual(mockCell.bookPassed?.name, "Severance", "Kitap adı eşleşmiyor!")
-        XCTAssertEqual(mockCell.bookPassed?.artistName, "Anonymous", "Sanatçı adı eşleşmiyor!")
-        XCTAssertEqual(mockCell.bookPassed?.date, "2022-03-18", "Tarih eşleşmiyor!")
-        XCTAssertEqual(mockCell.bookPassed?.imageUrl, "https://is1-ssl.mzstatic.com/image/thumb/Publication126/v4/0c/cf/d5/0ccfd594-6286-9daf-df93-3239b2f07e1c/SEV1_BookCover.jpg/100x134bb.png", "Resim URL'si eşleşmiyor!")
+        XCTAssertTrue(mockCell.updateUICalled, "The ViewModel's updateUI method was not called!")
+        XCTAssertEqual(mockCell.bookPassed?.name, "Severance", "The book name doesn't match!")
+        XCTAssertEqual(mockCell.bookPassed?.artistName, "Anonymous", "The artist name doesn't match!")
+        XCTAssertEqual(mockCell.bookPassed?.date, "2022-03-18", "The date doesn't match!")
+        XCTAssertEqual(mockCell.bookPassed?.imageUrl, "https://is1-ssl.mzstatic.com/image/thumb/Publication126/v4/0c/cf/d5/0ccfd594-6286-9daf-df93-3239b2f07e1c/SEV1_BookCover.jpg/100x134bb.png", "The image URL doesn't match!")
     }
 
+    // MARK: - Favorite Button Test
     func testFavoriteButtonTapped() {
-           // Given
-           XCTAssertFalse(mockCoreDataManager.toggleFavoriteCalled, "Favori işlemi daha önce yapılmış!")
+        // Given
+        XCTAssertFalse(mockCoreDataManager.toggleFavoriteCalled, "The favorite action has been performed earlier!")
 
-           // When
-           viewModel.favoriteButtonTapped()
+        // When
+        viewModel.favoriteButtonTapped()
 
-           // Then
-           XCTAssertTrue(mockCoreDataManager.toggleFavoriteCalled, "favoriteButtonTapped() metodu CoreDataManager'ı tetiklemedi!")
-           XCTAssertEqual(mockCoreDataManager.favoriteBookPassed?.name, "Severance", "Favori kitap doğru değil!")
-       }
+        // Then
+        XCTAssertTrue(mockCoreDataManager.toggleFavoriteCalled, "The favoriteButtonTapped() method did not trigger CoreDataManager!")
+        XCTAssertEqual(mockCoreDataManager.favoriteBookPassed?.name, "Severance", "The favorite book is incorrect!")
+    }
 
-       func testToggleFavoriteUpdatesCoreData() {
-           // Given
-           XCTAssertFalse(mockCoreDataManager.isFavorite, "Başlangıçta favori olmamalı!")
+    // MARK: - Toggle Favorite Updates Core Data Test
+    func testToggleFavoriteUpdatesCoreData() {
+        // Given
+        XCTAssertFalse(mockCoreDataManager.isFavorite, "It should not be a favorite initially!")
 
-           // When
-           viewModel.favoriteButtonTapped()
+        // When
+        viewModel.favoriteButtonTapped()
 
-           // Then
-           XCTAssertTrue(mockCoreDataManager.isFavorite, "Favori durumu değişmedi!")
+        // Then
+        XCTAssertTrue(mockCoreDataManager.isFavorite, "The favorite status did not change!")
 
-           // When
-           viewModel.favoriteButtonTapped()
+        // When
+        viewModel.favoriteButtonTapped()
 
-           // Then
-           XCTAssertFalse(mockCoreDataManager.isFavorite, "Favori durumu geri alınmadı!")
-       }
+        // Then
+        XCTAssertFalse(mockCoreDataManager.isFavorite, "The favorite status was not reverted!")
+    }
 }
+

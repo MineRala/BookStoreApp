@@ -20,11 +20,10 @@ struct BookModel: Codable, Equatable {
     var id: String?
     var name: String?
     var date: String?
-    var kind: String?
     var imageUrl: String?
 
     enum CodingKeys: String, CodingKey {
-        case artistName, id, name, kind
+        case artistName, id, name
         case date = "releaseDate"
         case imageUrl = "artworkUrl100"
     }
@@ -42,7 +41,6 @@ extension BookModel {
             id: favoriteBook.bookId,
             name: favoriteBook.bookName,
             date: favoriteBook.bookDate,
-            kind: nil,
             imageUrl: favoriteBook.bookImageUrl
         )
     }
