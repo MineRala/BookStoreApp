@@ -14,7 +14,6 @@ protocol CollectionViewCellViewModelInterface {
 
 final class CollectionViewCellViewModel {
     private weak var view: CollectionViewCellInterface?
-    
     private var book: BookModel
     private var coreDataManager: CoreDataManagerProtocol
 

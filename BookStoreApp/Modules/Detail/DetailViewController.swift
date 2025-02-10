@@ -12,7 +12,7 @@ protocol DetailViewControllerInterface: AnyObject {
     func updateFavoriteButtonIcon(isFavorite: Bool)
 }
 
-final class DetailViewController: UIViewController, DetailViewControllerInterface {
+final class DetailViewController: UIViewController {
     // MARK: IBOutlets
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -54,8 +54,8 @@ final class DetailViewController: UIViewController, DetailViewControllerInterfac
     }
 }
 
-// MARK: - UI
-extension DetailViewController {
+// MARK: - DetailViewControllerInterface
+extension DetailViewController: DetailViewControllerInterface {
     func rightBarButtonItem() {
         navigationItem.rightBarButtonItem = favoriteButton
     }

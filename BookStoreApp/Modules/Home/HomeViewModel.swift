@@ -29,6 +29,7 @@ final class HomeViewModel {
     private var bookDataDefault = [BookModel]()
     private var currentPage = 1
     private let itemsPerPage = 20
+    private var hasMoreData = true
     private let networkManager: NetworkManagerProtocol
 
     init(view: HomeViewControllerInterface, networkManager: NetworkManagerProtocol = NetworkManager.shared) {
@@ -41,7 +42,7 @@ final class HomeViewModel {
     }
 
     func loadBooks() {
-        guard !isLoading else { return }
+        guard !isLoading, hasMoreData else { return }
         isLoading = true
 
         #warning("Pagination olduğundan sorting sadece aynı page'deki itemlar arasında oluyor.")
@@ -49,6 +50,9 @@ final class HomeViewModel {
             guard let self else { return }
             DispatchQueue.main.async {
                 self.isLoading = false
+                if books.isEmpty || books.count < self.itemsPerPage {
+                    self.hasMoreData = false
+                }
                 if self.currentPage == 1 {
                     self.bookDataDefault = books
                 }
@@ -108,6 +112,8 @@ extension HomeViewModel: HomeViewModelInterface {
 
     func sortBooks() {
         currentPage = 1
+        hasMoreData = true
+
         switch selectedSort {
         case .allBook:
             bookData = bookDataDefault
@@ -129,15 +135,16 @@ extension HomeViewModel: HomeViewModelInterface {
     }
 
     func createAction(sortType: SortType) {
-        self.selectedSort = sortType
-        self.sortBooks()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
             guard let self else { return }
             if !self.bookData.isEmpty {
                 let indexPath = IndexPath(item: 0, section: 0)
                 self.view?.collectionViewScroll(index: indexPath)
             }
         }
+        self.selectedSort = sortType
+        self.sortBooks()
+
     }
 
     func isSortTypeSelected(_ sortType: SortType) -> Bool {
@@ -146,7 +153,7 @@ extension HomeViewModel: HomeViewModelInterface {
 
     func willDisplay(index: Int) {
         if selectedSort == .favoritesBook { return }
-        if index == bookData.count - 1 && !isLoading {
+        if index == bookData.count - 1 && !isLoading && hasMoreData {
             currentPage += 1
             loadBooks()
         }

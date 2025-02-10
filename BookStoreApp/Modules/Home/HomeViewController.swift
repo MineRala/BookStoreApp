@@ -39,11 +39,11 @@ final class HomeViewController: UIViewController {
 
 // MARK: - HomeViewControllerInterface
 extension HomeViewController: HomeViewControllerInterface {
-        func setEmptyLabelVisibility(isVisible: Bool) {
+    func setEmptyLabelVisibility(isVisible: Bool) {
         emptyLabel.isHidden = !isVisible
         collectionView.isHidden = isVisible
     }
-    
+
     func configureActivityIndicator() {
         self.activityIndicator.setActiveState(isActive: true)
         self.activityIndicator.transform = CGAffineTransform(scaleX: 2.0, y: 2.0)
@@ -132,6 +132,7 @@ extension HomeViewController: UICollectionViewDataSource {
         cell.configureCell(with: CollectionViewCellViewModel(book: viewModel.getBook(index: indexPath.item), view: cell))
         return cell
     }
+
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -152,6 +153,6 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        viewModel.willDisplay(index: indexPath.row)
+        viewModel.willDisplay(index: indexPath.item)
     }
 }

@@ -23,6 +23,9 @@ final class TableViewCell: UITableViewCell {
     // MARK: Life Cycle
     override func awakeFromNib() {
         super.awakeFromNib()
+    }
+
+    override func prepareForReuse() {
         posterImageView.image = nil
     }
 }
